@@ -1,0 +1,23 @@
+fn main() {
+    ids := std.io.read_file("inputs/01") -> parse;
+    "part 1: " + (ids -> part_1 str) -> println;
+    "part 2: " + (ids -> part_2 str) -> println;
+}
+
+fn parse(input) input
+    split '\n'
+    map (\(line) line split "   " map int.1 collect)
+    unzip;
+
+fn part_1(ids) ids[0] sort zip_with (ids[1] sort) -.2 map abs.1 sum;
+
+fn part_2(ids) {
+    multiset := Map.new();
+    for id in ids[1] {
+        if multiset contains id not {
+            multiset[id] = 0;
+        }
+        multiset[id] += 1;
+    }
+    return ids[0] map (\(id) multiset get id or 0 * id) sum;
+}
