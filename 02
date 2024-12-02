@@ -1,0 +1,17 @@
+import run;
+
+fn main() run.day 2 parse part_1 part_2;
+
+fn parse(input) input split '\n' map (\(line) line split ' ' map int.1 collect);
+
+fn part_1(reports) reports filter safe? count;
+
+fn part_2(reports) reports filter safe_2? count;
+
+fn safe_2?(report) 0 to (report len) any \(i) report remove i -> safe?;
+
+fn safe?(report) report windows 2 all decreasing? or (report windows 2 all increasing?);
+
+fn decreasing?(pair) 1 to 4 contains (pair[0] - pair[1]);
+
+fn increasing?(pair) 1 to 4 contains (pair[1] - pair[0]);
