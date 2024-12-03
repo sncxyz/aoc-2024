@@ -1,0 +1,23 @@
+import run;
+
+fn main() run.day 3 (\(x) x) part_1 part_2;
+
+fn part_1(memory) memory split "mul(" skip 1 filter_map parse_mul sum;
+
+fn part_2(memory) memory split "do()" flat_map (\(s) s split "don't()" nth 0 split "mul(" skip 1) filter_map parse_mul sum;
+
+fn parse_mul(s) {
+    comma := s position \(c) c == ',';
+    if comma {
+        paren := s skip (comma + 1) position \(c) c == ')';
+        if paren {
+            paren += comma + 1;
+            lhs := s[0 to comma] int?;
+            rhs := s[comma + 1 to paren] int?;
+            if lhs and rhs {
+                return lhs * rhs;
+            }
+        }
+    }
+    return nil;
+}
