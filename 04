@@ -1,0 +1,23 @@
+import run, nd;
+
+use nd.(Vec2, Matrix, vector.(adj, ne, nw, sw, se));
+
+fn main() run.day 4 parse part_1 part_2;
+
+fn parse(input) Matrix.new(input split '\n');
+
+fn part_1(ws) ws positions filter (\(p) ws[p] is 'X') map (\(p) xmas_from(ws, p)) sum;
+
+fn xmas_from(ws, p) adj() filter (\(dp) scan_xmas(ws, p, dp)) count;
+
+fn scan_xmas(ws, p, dp) ws get (p + dp) is 'M'
+    and (ws get (p + (dp * 2)) is 'A')
+    and (ws get (p + (dp * 3)) is 'S');
+
+fn part_2(ws) ws positions filter (\(p) x-mas_at(ws, p)) count;
+
+fn x-mas_at(ws, p) ws[p] is 'A'
+    and m_and_s?(ws get (p + ne()), ws get (p + sw()))
+    and m_and_s?(ws get (p + nw()), ws get (p + se()));
+
+fn m_and_s?(a, b) ((a is 'M') and (b is 'S')) or ((a is 'S') and (b is 'M'));
