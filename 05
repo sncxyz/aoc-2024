@@ -4,46 +4,33 @@ fn main() run.day 5 parse part_1 part_2;
 
 fn parse(input) {
     parts := input split "\n\n" collect;
-    rules := parse_ints(parts[0], '|');
+    rules := parse_ints(parts[0], '|') collect Set.new();
     updates := parse_ints(parts[1], ',');
-    
-    after := Map.new();
-    for rule in rules {
-        if after contains rule[0] {
-            after[rule[0]] insert= rule[1];
-        } else {
-            after[rule[0]] = set([rule[1]]);
-        }
-    }
-
-    return [after, updates];
+    return [rules, updates];
 }
 
-fn parse_ints(lines, delim) lines split '\n' map (\(line) line split delim map int.1 collect) collect;
+fn parse_ints(lines, delim) lines split '\n' map (\(line) line split delim map int.1 collect);
 
 fn part_1(manual) manual[1] filter (\(u) fix_pass(manual[0], u) is nil) map middle sum;
 
 fn part_2(manual) manual[1] filter_map (\(u) fix_pass(manual[0], u)) map (\(u) fix(manual[0], u) -> middle) sum;
 
-fn fix_pass(after, update) {
+fn fix_pass(rules, update) {
     changed := false;
     for i in 1 to (update len) {
         for j in 0 to i {
-            a := after get update[i];
-            if a and (a contains update[j]) {
-                changed = true;
+            if rules contains [update[i], update[j]] {
                 update swap= i, j;
+                changed = true;
             }
         }
     }
-    if changed {
-        return update;
-    }
+    return changed and update or nil;
 }
 
-fn fix(after, update) {
+fn fix(rules, update) {
     loop {
-        new := fix_pass(after, update);
+        new := fix_pass(rules, update);
         if not new {
             return update;
         }
