@@ -1,0 +1,70 @@
+import run, nd;
+
+use nd.(Vec2, Matrix, vector.n);
+
+fn main() run.day 6 parse part_1 part_2 "main";
+
+fn parse(input) {
+    map := Matrix.new(input split '\n');
+    guard := map enumerate find (\(x) x[1] == '^');
+    pos := guard[0];
+    return [map, pos];
+}
+
+fn part_1(input) {
+    map := input[0];
+    pos := input[1];
+    dir := n();
+    total := 1;
+    map[pos] = 'X';
+    while map in_bounds (pos + dir) {
+        if map[pos + dir] == '#' {
+            dir perp=;
+        } else {
+            pos += dir;
+            if map[pos] != 'X' {
+                map[pos] = 'X';
+                total += 1;
+            }
+        }
+    }
+    return total;
+}
+
+fn part_2(input) {
+    map := input[0];
+    start := input[1];
+    pos := start;
+    dir := n();
+    to_check := Map.new();
+    while map in_bounds (pos + dir) {
+        if map[pos + dir] == '#' {
+            dir perp=;
+        } else {
+            pos += dir;
+            if pos != start and (to_check contains pos not) {
+                to_check[pos] = dir;
+            }
+        }
+    }
+    return to_check pairs filter (\(pair) loop?(map, pair[0], pair[1])) count;
+}
+
+fn loop?(map, pos, dir) {
+    obstruction := pos;
+    pos -= dir;
+    dir perp=;
+    visited := [[pos, dir]] set;
+    while map in_bounds (pos + dir) {
+        if pos + dir == obstruction or (map[pos + dir] == '#') {
+            dir perp=;
+        } else {
+            pos += dir;
+        }
+        if visited contains [pos, dir] {
+            return true;
+        }
+        visited insert= [pos, dir];
+    }
+    return false;
+}
