@@ -1,70 +1,125 @@
 import run, nd;
 
-use nd.(Vec2, Matrix, vector.n);
+use nd.(Vec2, Matrix, v, vector.(n, s, e, w));
 
-fn main() run.day 6 parse part_1 part_2 "main";
+fn main() run.day 6 shared part_1 part_2;
 
-fn parse(input) {
+fn shared(input) {
     map := Matrix.new(input split '\n');
     guard := map enumerate find (\(x) x[1] == '^');
-    pos := guard[0];
-    return [map, pos];
-}
-
-fn part_1(input) {
-    map := input[0];
-    pos := input[1];
+    start := guard[0];
+    map[start] = '.';
+    pos := start;
+    visited := set([pos]);
     dir := n();
-    total := 1;
-    map[pos] = 'X';
     while map in_bounds (pos + dir) {
         if map[pos + dir] == '#' {
             dir perp=;
         } else {
             pos += dir;
-            if map[pos] != 'X' {
-                map[pos] = 'X';
-                total += 1;
-            }
+            visited insert= pos;
         }
     }
-    return total;
+    return [map, start, visited];
 }
+
+fn part_1(input) input[2] len;
 
 fn part_2(input) {
     map := input[0];
     start := input[1];
-    pos := start;
-    dir := n();
-    to_check := Map.new();
-    while map in_bounds (pos + dir) {
-        if map[pos + dir] == '#' {
-            dir perp=;
-        } else {
-            pos += dir;
-            if pos != start and (to_check contains pos not) {
-                to_check[pos] = dir;
+    candidates := input[2] remove start;
+
+    width := map width;
+    height := map height;
+
+    up := Matrix.init(width, height, nil);
+    for x in 0 to width {
+        dest := nil;
+        for y in 0 to height {
+            if map[v(x, y)] == '#' {
+                dest = v(x, y + 1);
+            } else {
+                up[v(x, y)] = dest;
             }
         }
     }
-    return to_check pairs filter (\(pair) loop?(map, pair[0], pair[1])) count;
-}
 
-fn loop?(map, pos, dir) {
-    obstruction := pos;
-    pos -= dir;
-    dir perp=;
-    visited := [[pos, dir]] set;
-    while map in_bounds (pos + dir) {
-        if pos + dir == obstruction or (map[pos + dir] == '#') {
-            dir perp=;
-        } else {
-            pos += dir;
+    right := Matrix.init(width, height, nil);
+    for y in 0 to height {
+        dest := nil;
+        for x in 0 to width rev {
+            if map[v(x, y)] == '#' {
+                dest = v(x - 1, y);
+            } else {
+                right[v(x, y)] = dest;
+            }
         }
-        if visited contains [pos, dir] {
-            return true;
-        }
-        visited insert= [pos, dir];
     }
-    return false;
+
+    down := Matrix.init(width, height, nil);
+    for x in 0 to width {
+        dest := nil;
+        for y in 0 to height rev {
+            if map[v(x, y)] == '#' {
+                dest = v(x, y - 1);
+            } else {
+                down[v(x, y)] = dest;
+            }
+        }
+    }
+
+    left := Matrix.init(width, height, nil);
+    for y in 0 to height {
+        dest := nil;
+        for x in 0 to width {
+            if map[v(x, y)] == '#' {
+                dest = v(x + 1, y);
+            } else {
+                left[v(x, y)] = dest;
+            }
+        }
+    }
+
+    dests := [up, right, down, left];
+    total := 0;
+
+    for obstr in candidates list {
+        remapped_dests := [];
+        for dir in [s(), w(), n(), e()] {
+            dests := Map.new();
+            pos := obstr + dir;
+            dest := pos;
+            while map get pos is '.' {
+                dests[pos] = dest;
+                pos += dir;
+            }
+            remapped_dests push= dests;
+        }
+
+        visited := [Set.new()] * 4;
+        dir := 0;
+        pos := start;
+        loop {
+            new := remapped_dests[dir] get pos;
+            if new {
+                pos = new;
+            } else {
+                new := dests[dir][pos];
+                if new {
+                    pos = new;
+                } else {
+                    break;
+                }
+            }
+            dir = dir + 1 mod 4;
+            if visited[dir] contains pos {
+                total += 1;
+                break;
+            }
+            visited[dir] insert= pos;
+        }
+    }
+
+    return total;
 }
