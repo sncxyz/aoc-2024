@@ -1,0 +1,37 @@
+import run;
+
+fn main() run.day 7 parse part_1 part_2 "main";
+
+fn parse(input) input split '\n' map \(line) {
+    parts := line split ": ";
+    return [parts[0] int, parts[1] split ' ' map int.1 collect];
+};
+
+fn part_1(eqs) part_*(eqs, false);
+
+fn part_2(eqs) part_*(eqs, true);
+
+fn part_*(eqs, concat?) eqs filter (\(eq) solve?(eq[0], eq[1], concat?)) map (\(eq) eq[0]) sum;
+
+fn solve?(answer, args, concat?) {
+    len := args len;
+    x := args last;
+    if len == 1 {
+        return x == answer;
+    }
+    args = args[0 to (len - 1)];
+    if answer > x and concat? {
+        m := 10 ^ (x log10 + 1);
+        diff := answer - x;
+        if diff mod m == 0 and solve?(diff // m, args, true) {
+            return true;
+        }
+    }
+    if answer mod x == 0 and solve?(answer // x, args, concat?) {
+        return true;
+    }
+    if answer >= x and solve?(answer - x, args, concat?) {
+        return true;
+    }
+    return false;
+}
