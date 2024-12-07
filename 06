@@ -10,25 +10,27 @@ fn shared(input) {
     start := guard[0];
     map[start] = '.';
     pos := start;
-    visited := set([pos]);
     dir := n();
+    visited := Map.new();
+    visited[pos] = dir;
     while map in_bounds (pos + dir) {
         if map[pos + dir] == '#' {
             dir perp=;
         } else {
             pos += dir;
-            visited insert= pos;
+            if visited contains pos not {
+                visited[pos] = dir;
+            }
         }
     }
-    return [map, start, visited];
+    return [map, visited remove start];
 }
 
-fn part_1(input) input[2] len;
+fn part_1(input) input[1] len + 1;
 
 fn part_2(input) {
     map := input[0];
-    start := input[1];
-    candidates := input[2] remove start;
+    candidates := input[1];
 
     width := map width;
     height := map height;
@@ -84,11 +86,16 @@ fn part_2(input) {
     dests := [up, right, down, left];
     total := 0;
 
-    for obstr in candidates list {
+    for candidate in candidates pairs {
+        obstr := candidate[0];
+        dir := candidate[1];
+        start := obstr - dir;
+        start_dir := [w(), n(), e(), s()] position \(d) d == dir;
+
         tortoise := start;
         hare := start;
-        tortoise_dir := 0;
-        hare_dir := 0;
+        tortoise_dir := start_dir;
+        hare_dir := start_dir;
         
         loop {
             dest := apply_obstr(hare, hare_dir, dests[hare_dir][hare], obstr);
