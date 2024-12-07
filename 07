@@ -11,7 +11,7 @@ fn part_1(eqs) part_*(eqs, false);
 
 fn part_2(eqs) part_*(eqs, true);
 
-fn part_*(eqs, concat?) eqs filter (\(eq) solve?(eq[0], eq[1], concat?)) map (\(eq) eq[0]) sum;
+fn part_*(eqs, concat?) eqs filter_map (\(eq) solve?(eq[0], eq[1], concat?) then eq[0]) sum;
 
 fn solve?(answer, args, concat?) {
     len := args len;
@@ -30,8 +30,5 @@ fn solve?(answer, args, concat?) {
     if answer mod x == 0 and solve?(answer // x, args, concat?) {
         return true;
     }
-    if answer >= x and solve?(answer - x, args, concat?) {
-        return true;
-    }
-    return false;
+    return answer >= x and solve?(answer - x, args, concat?);
 }

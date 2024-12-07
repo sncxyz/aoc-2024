@@ -6,7 +6,7 @@ fn main() run.day 4 parse part_1 part_2;
 
 fn parse(input) Matrix.new(input split '\n');
 
-fn part_1(ws) ws positions filter (\(p) ws[p] is 'X') map (\(p) xmas_from(ws, p)) sum;
+fn part_1(ws) ws positions filter_map (\(p) ws[p] is 'X' then xmas_from(ws, p)) sum;
 
 fn xmas_from(ws, p) adj() filter (\(dp) scan_xmas(ws, p, dp)) count;
 
