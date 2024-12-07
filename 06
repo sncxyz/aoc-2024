@@ -85,41 +85,53 @@ fn part_2(input) {
     total := 0;
 
     for obstr in candidates list {
-        remapped_dests := [];
-        for dir in [s(), w(), n(), e()] {
-            dests := Map.new();
-            pos := obstr + dir;
-            dest := pos;
-            while map get pos is '.' {
-                dests[pos] = dest;
-                pos += dir;
-            }
-            remapped_dests push= dests;
-        }
-
-        visited := [Set.new()] * 4;
-        dir := 0;
-        pos := start;
+        tortoise := start;
+        hare := start;
+        tortoise_dir := 0;
+        hare_dir := 0;
+        
         loop {
-            new := remapped_dests[dir] get pos;
-            if new {
-                pos = new;
+            dest := apply_obstr(hare, hare_dir, dests[hare_dir][hare], obstr);
+            if dest {
+                hare = dest;
             } else {
-                new := dests[dir][pos];
-                if new {
-                    pos = new;
-                } else {
-                    break;
-                }
+                break;
             }
-            dir = dir + 1 mod 4;
-            if visited[dir] contains pos {
+            hare_dir = hare_dir + 1 mod 4;
+            
+            dest = apply_obstr(hare, hare_dir, dests[hare_dir][hare], obstr);
+            if dest {
+                hare = dest;
+            } else {
+                break;
+            }
+            hare_dir = hare_dir + 1 mod 4;
+
+            tortoise = apply_obstr(tortoise, tortoise_dir, dests[tortoise_dir][tortoise], obstr);
+            tortoise_dir = tortoise_dir + 1 mod 4;
+
+            if tortoise == hare & (tortoise_dir == hare_dir) {
                 total += 1;
                 break;
             }
-            visited[dir] insert= pos;
         }
     }
 
     return total;
+}
+
+fn apply_obstr(start, dir, end, obstr) {
+    if dir == 0 and (obstr.x == start.x) and (obstr.y < start.y) and (not end or (obstr.y >= end.y)) {
+        return v(obstr.x, obstr.y + 1);
+    }
+    if dir == 1 and (obstr.y == start.y) and (obstr.x > start.x) and (not end or (obstr.x <= end.x)) {
+        return v(obstr.x - 1, obstr.y);
+    }
+    if dir == 2 and (obstr.x == start.x) and (obstr.y > start.y) and (not end or (obstr.y <= end.y)) {
+        return v(obstr.x, obstr.y - 1);
+    }
+    if dir == 3 and (obstr.y == start.y) and (obstr.x < start.x) and (not end or (obstr.x >= end.x)) {
+        return v(obstr.x + 1, obstr.y);
+    }
+    return end;
 }
