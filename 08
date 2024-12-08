@@ -1,0 +1,60 @@
+import run, nd;
+
+use nd.Matrix;
+
+fn main() run.day 8 parse part_1 part_2;
+
+fn parse(input) {
+    map := Matrix.new(input split '\n');
+
+    nodes := Map.new();
+    for pair in map enumerate {
+        pos := pair[0];
+        cell := pair[1];
+        if cell != '.' {
+            if nodes contains cell {
+                nodes[cell] push= pos;
+            } else {
+                nodes[cell] = [pos];
+            }
+        }
+    }
+
+    pairs := [];
+    for locs in nodes values {
+        for i in 0 to (locs len - 1) {
+            for j in i + 1 to (locs len) {
+                pairs push= [locs[i], locs[j]];
+                pairs push= [locs[j], locs[i]];
+            }
+        }
+    }
+
+    return [pairs, map dim];
+}
+
+fn part_1(input) part_*(input, \(p, dp) [p + dp]);
+
+fn part_2(input) part_*(input, \(p, dp) 0 to map \(i) dp * i + p);
+
+fn part_*(input, f) {
+    pairs := input[0];
+    dim := input[1];
+
+    antinodes := Matrix.init(dim.x, dim.y, false);
+    total := 0;
+
+    for pair in pairs {
+        for pos in f(pair[1], pair[1] - pair[0]) {
+            if antinodes in_bounds pos not {
+                break;
+            }
+            if not antinodes[pos] {
+                antinodes[pos] = true;
+                total += 1;
+            }
+        }
+    }
+
+    return total;
+}
