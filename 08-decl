@@ -1,0 +1,44 @@
+import run, nd;
+
+use nd.Matrix;
+
+fn main() run.day 8 parse part_1 part_2 "main";
+
+fn parse(input) Matrix.new(input split '\n') -> shared;
+
+fn shared(map) map
+    enumerate
+    fold Map.new() (\(acc, pair)
+        pair[1] != '.'
+            and (acc contains pair[1]
+                and (acc index pair[1] (acc index pair[1] push pair[0]))
+                or (acc index pair[1] [pair[0]])
+            )
+            or acc
+    )
+    -> pairs
+    -> \(x) [x, map dim];
+
+fn pairs(nodes) nodes values
+    flat_map (\(locs) 0 to (locs len - 1)
+        flat_map (\(i) i + 1 to (locs len)
+            flat_map \(j) [[locs[i], locs[j]], [locs[j], locs[i]]]
+        )
+    )
+    collect;
+
+fn part_1(input) part_*(input, \(p, dp) [p + dp]);
+
+fn part_2(input) part_*(input, \(p, dp) 0 to map \(i) dp * i + p);
+
+fn part_*(input, f) input[0]
+    fold [0, Matrix.init(input[1], false)] (\(acc, pair)
+        f(pair[1], pair[1] - pair[0])
+            take_while (\(pos) acc[1] in_bounds pos)
+            fold acc (\(acc, pos)
+                acc[1][pos]
+                    and acc
+                    or [acc[0] + 1, acc[1] index pos true]
+            )
+    )
+    index 0;
