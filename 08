@@ -39,11 +39,9 @@ fn part_2(input) part_*(input, \(p, dp) 0 to map \(i) dp * i + p);
 
 fn part_*(input, f) {
     pairs := input[0];
-    dim := input[1];
+    antinodes := Matrix.init(input[1], false);
 
-    antinodes := Matrix.init(dim.x, dim.y, false);
     total := 0;
-
     for pair in pairs {
         for pos in f(pair[1], pair[1] - pair[0]) {
             if antinodes in_bounds pos not {
@@ -55,6 +53,6 @@ fn part_*(input, f) {
             }
         }
     }
-
+    
     return total;
 }
