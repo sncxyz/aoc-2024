@@ -1,0 +1,106 @@
+import run;
+
+fn main() run.day 9 parse part_1 part_2;
+
+fn parse(input) {
+    ids := [];
+    gaps := [];
+    for id in 0 to (input len // 2) {
+        ids push= int(input[id * 2]) - int('0');
+        gaps push= int(input[id * 2 + 1]) - int('0');
+    }
+    ids push= int(input[-1]) - int('0');
+    return [ids, gaps];
+}
+
+fn part_1(input) {
+    ids := input[0];
+    gaps := input[1];
+
+    total := 0;
+    pos := 0;
+    id := 0;
+    i := 0;
+    
+    while id < (ids len) {
+        size := ids[id];
+
+        total += id * f(pos, size);
+        pos += size;
+
+        id += 1;
+
+        if i < (gaps len) {
+            gap := gaps[i];
+            i += 1;
+            while gap > 0 and (id < (ids len)) {
+                id := ids len - 1;
+                size := ids[id];
+
+                total += id * f(pos, gap min size);
+                pos += gap min size;
+                
+                if size > gap {
+                    ids[-1] = size - gap;
+                    gap = 0;
+                } else {
+                    ids pop=;
+                    gap -= size;
+                }
+            }
+        }
+    }
+
+    return total;
+}
+
+fn part_2(input) {
+    ids := input[0];
+    gaps := input[1];
+
+    queues := [[]] * 10;
+    for id, size in ids {
+        for gap in size to 10 {
+            queues[gap] push= id;
+        }
+    }
+
+    total := 0;
+    pos := 0;
+    used := [false] * (ids len);
+
+    for id, size in ids {
+        if ! used[id] {
+            total += id * f(pos, size);
+        }
+        pos += size;
+
+        if id == (gaps len) {
+            break;
+        }
+
+        gap := gaps[id];
+        while gap > 0 {
+            i := queues[gap] rev take_while (> id) position (\(id) ! used[id]);
+            if i {
+                i = queues[gap] len - i - 1;
+                id := queues[gap][i];
+                queues[gap] truncate= i;
+                used[id] = true;
+
+                size := ids[id];
+                total += id * f(pos, size);
+                pos += size;
+                gap -= size;
+            } else {
+                queues[gap] = [];
+                pos += gap;
+                gap = 0;
+            }
+        }
+    }
+
+    return total;
+}
+
+fn f(pos, size) pos * 2 + size - 1 * size // 2;
