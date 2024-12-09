@@ -81,9 +81,11 @@ fn part_2(input) {
 
         gap := gaps[id];
         while gap > 0 {
-            i := queues[gap] rev take_while (> id) position (\(id) ! used[id]);
-            if i {
-                i = queues[gap] len - i - 1;
+            i := queues[gap] len - 1;
+            while i > id and used[queues[gap][i]] {
+                i -= 1;
+            }
+            if i > id {
                 id := queues[gap][i];
                 queues[gap] truncate= i;
                 used[id] = true;
