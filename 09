@@ -82,16 +82,20 @@ fn part_2(input) {
         gap := gaps[id];
         while gap > 0 {
             i := queues[gap] len - 1;
-            while i > id and used[queues[gap][i]] {
+            move_id := id;
+            while i >= 0 {
+                move_id = queues[gap][i];
+                if move_id <= id or (! used[move_id]) {
+                    break;
+                }
                 i -= 1;
             }
-            if i > id {
-                id := queues[gap][i];
+            if i >= 0 and (move_id > id) {
                 queues[gap] truncate= i;
-                used[id] = true;
+                used[move_id] = true;
 
-                size := ids[id];
-                total += id * f(pos, size);
+                size := ids[move_id];
+                total += move_id * f(pos, size);
                 pos += size;
                 gap -= size;
             } else {
