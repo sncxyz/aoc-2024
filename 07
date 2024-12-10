@@ -1,6 +1,6 @@
 import run;
 
-fn main() run.day 7 parse part_1 part_2 "main";
+fn main() run.day 7 parse part_1 part_2;
 
 fn parse(input) input split '\n' map \(line) {
     parts := line split ": ";

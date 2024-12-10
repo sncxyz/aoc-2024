@@ -2,7 +2,7 @@ import run, nd;
 
 use nd.(Matrix, vector.orth);
 
-fn main() run.day 10 parse part_1 part_2 "main";
+fn main() run.day 10 parse part_1 part_2;
 
 fn parse(input) parse_map(Matrix.new(input split '\n' map \(line) line map \(c) int(c) - int('0')));
 

@@ -2,7 +2,7 @@ import run, nd;
 
 use nd.Matrix;
 
-fn main() run.day 8 parse part_1 part_2 "main";
+fn main() run.day 8 parse part_1 part_2;
 
 fn parse(input) Matrix.new(input split '\n') -> shared;
 
