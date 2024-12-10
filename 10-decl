@@ -9,7 +9,7 @@ fn parse(input) parse_map(Matrix.new(input split '\n' map \(line) line map \(c) 
 fn parse_map(map) map
     positions
     fold [[[]] * 10, Matrix.init(map dim, nil)] \(acc, p) [
-        acc[0] index map[p] (acc[0][map[p]] push p),
+        acc[0] map_index map[p] \(ps) ps push p,
         acc[1] index p (orth() filter_map (\(dp) map get (p + dp) is (map[p] - 1) then (p + dp)) collect),
     ];
 
