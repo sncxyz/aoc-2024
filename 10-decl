@@ -1,0 +1,33 @@
+import run, nd;
+
+use nd.(Matrix, vector.orth);
+
+fn main() run.day 10 parse part_1 part_2 "main";
+
+fn parse(input) parse_map(Matrix.new(input split '\n' map \(line) line map \(c) int(c) - int('0')));
+
+fn parse_map(map) map
+    positions
+    fold [[[]] * 10, Matrix.init(map dim, nil)] \(acc, p) [
+        acc[0] index map[p] (acc[0][map[p]] push p),
+        acc[1] index p (orth() filter_map (\(dp) map get (p + dp) is (map[p] - 1) then (p + dp)) collect),
+    ];
+
+fn part_1(input) part_*(input[0], input[1], \(id) set([id]), Set.new(), |.2, len.1);
+
+fn part_2(input) part_*(input[0], input[1], \(_) 1, 0, +.2, \(x) x);
+
+fn part_*(pos, adj, init, default, combine, score) pos
+    -> init_info adj init
+    -> solve pos adj default combine
+    -> total_score pos score;
+
+fn init_info(pos, adj, init) pos[0]
+    enumerate
+    fold Matrix.init(adj dim, nil) \(info, pair) info index pair[1] init(pair[0]);
+
+fn solve(info, pos, adj, default, combine) 1 to 10
+    fold info \(info, h) pos[h]
+        fold info \(info, p) info index p (adj[p] map (\(p) info[p]) fold default combine);
+
+fn total_score(info, pos, score) pos[9] map (\(p) score(info[p])) sum;

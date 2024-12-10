@@ -1,0 +1,42 @@
+import run, nd;
+
+use nd.(Matrix, vector.orth);
+
+fn main() run.day 10 shared part_1 part_2 "main";
+
+fn shared(input) {
+    grid := Matrix.new(input split '\n' map \(line) line map int.1 map (sub int('0')));
+
+    positions := [[]] * 10;
+    for pair in grid enumerate {
+        positions[pair[1]] push= pair[0];
+    }
+
+    info := Matrix.init(grid dim, nil);
+
+    for id, pos in positions[9] {
+        info[pos] = Info(reachable = set([id]), paths = 1);
+    }
+
+    for h in 0 to 9 rev {
+        for pos in positions[h] {
+            info[pos] = orth()
+                filter (\(dp) grid get (pos + dp) is (h + 1))
+                map (\(dp) info[pos + dp])
+                fold Info.empty() Info.combine;
+        }
+    }
+
+    return positions[0] map \(pos) info[pos];
+}
+
+fn part_1(info) info map (\(i) i.reachable len) sum;
+
+fn part_2(info) info map (\(i) i.paths) sum;
+
+rec Info(reachable, paths);
+
+impl Info {
+    fn empty() Self(reachable = set([]), paths = 0);
+    fn combine(x, y) Self(reachable = x.reachable | y.reachable, paths = x.paths + y.paths);
+}

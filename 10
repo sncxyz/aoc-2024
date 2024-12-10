@@ -1,0 +1,36 @@
+import run, nd;
+
+use nd.(Matrix, vector.orth);
+
+fn main() run.day 10 parse part_1 part_2 "main";
+
+fn parse(input) {
+    map := Matrix.new(input split '\n' map \(line) line map \(c) int(c) - int('0'));
+    pos := [[]] * 10;
+    adj := Matrix.init(map dim, nil);
+    for p in map positions {
+        h := map[p];
+        pos[h] push= p;
+        adj[p] = orth() filter_map (\(dp) map get (p + dp) is (h - 1) then (p + dp)) collect;
+    }
+    return [pos, adj];
+}
+
+fn part_1(input) part_*(input[0], input[1], \(id) set([id]), Set.new(), |.2, len.1);
+
+fn part_2(input) part_*(input[0], input[1], \(_) 1, 0, +.2, \(x) x);
+
+fn part_*(pos, adj, init, default, combine, score) {
+    info := Matrix.init(adj dim, nil);
+    for id, p in pos[0] {
+        info[p] = init(id);
+    }
+
+    for h in 1 to 10 {
+        for p in pos[h] {
+            info[p] = adj[p] map (\(p) info[p]) fold default combine;
+        }
+    }
+
+    return pos[9] map (\(p) score(info[p])) sum;
+}
