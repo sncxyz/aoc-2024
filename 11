@@ -1,0 +1,44 @@
+import run;
+
+fn main() run.day 11 parse part_1 part_2 "main";
+
+fn parse(input) input split ' ' map int.1 collect;
+
+fn part_1(stones) part_*(stones, 25);
+
+fn part_2(stones) part_*(stones, 75);
+
+fn part_*(stones, n) stones
+    fold ([Map.new()] * (n + 1)) (\(cache, stone) blink(cache, n, stone))
+    index n values sum;
+
+fn blink(cache, n, stone) {
+    if cache[n] contains stone {
+        return cache;
+    }
+    if n == 0 {
+        cache[0][stone] = 1;
+        return cache;
+    }
+
+    if stone == 0 {
+        cache = blink(cache, n - 1, 1);
+        cache[n][0] = cache[n - 1][1];
+        return cache;
+    }
+
+    digits := stone log10 + 1;
+    if digits & 1 == 0 {
+        m := 10 ^ (digits >> 1);
+        a := stone div m;
+        b := stone mod m;
+        cache = blink(cache, n - 1, a);
+        cache = blink(cache, n - 1, b);
+        cache[n][stone] = cache[n - 1][a] + cache[n - 1][b];
+        return cache;
+    }
+
+    cache = blink(cache, n - 1, stone * 2024);
+    cache[n][stone] = cache[n - 1][stone * 2024];
+    return cache;
+}
