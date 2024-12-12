@@ -1,0 +1,66 @@
+import run, nd;
+
+use nd.(Matrix, vector.(orth, e));
+
+fn main() run.day 12 shared part_1 part_2;
+
+fn shared(input) {
+    garden := Matrix.new(input split '\n');
+    visited := Matrix.init(garden dim, false);
+    regions := [];
+    for pos in garden positions {
+        if not visited[pos] {
+            state := State.new(garden, visited, garden[pos]) solve pos;
+            visited = state.visited;
+            regions push= state.region;
+        }
+    }
+    return regions;
+}
+
+fn part_1(regions) regions map (\(region) region.area * region.perim) sum;
+
+fn part_2(regions) regions
+    map (\(region) region.dirs
+        map (\(dir) dir
+            list
+            filter (\(pos) dir contains (pos + e()) not)
+            count
+        )
+        sum
+        * region.area
+    )
+    sum;
+
+rec Region(area, perim, dirs);
+
+rec State(garden, visited, plant, region);
+
+impl State {
+    fn new(garden, visited, plant) Self(
+        garden,
+        visited,
+        plant,
+        region = Region(area = 1, perim = 0, dirs = [Set.new()] * 4),
+    );
+
+    self solve pos {
+        self.visited[pos] = true;
+        for i, dp in orth() {
+            pos := pos + dp;
+            if self.garden get pos is self.plant {
+                if not self.visited[pos] {
+                    self.region.area += 1;
+                    self solve= pos;
+                }
+            } else {
+                self.region.perim += 1;
+                if i mod 2 == 0 {
+                    pos perp=;
+                }
+                self.region.dirs[i] insert= pos;
+            }
+        }
+        return self;
+    }
+}
