@@ -1,0 +1,30 @@
+import run;
+
+fn main() run.day 13 parse part_1 part_2;
+
+fn parse(input) input split "\n\n" map parse_machine collect;
+
+fn parse_machine(lines) lines
+    split '\n'
+    map (\(line) line
+        split 'X'
+        nth 1
+        split ", Y"
+        map (\(s) s[1 to] int)
+        collect
+    )
+    collect;
+
+fn part_1(machines) machines filter_map solve sum;
+
+fn part_2(machines) machines map (map_index 2 (map (+ 10000000000000))) filter_map solve sum;
+
+fn solve(m) cost(
+    (m[2][0] * m[1][1]) - (m[2][1] * m[1][0]),
+    (m[2][1] * m[0][0]) - (m[2][0] * m[0][1]),
+    (m[0][0] * m[1][1]) - (m[0][1] * m[1][0])
+);
+
+fn cost(a, b, d) tokens(a / d int?, b / d int?);
+
+fn tokens(a, b) a and b and (3 * a + b);
