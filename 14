@@ -1,0 +1,53 @@
+import run, nd;
+
+use nd.vector.v;
+
+let width = 101;
+let height = 103;
+
+fn main() run.day 14 parse part_1 part_2 "main";
+
+fn parse(input) input split '\n' map parse_robot collect;
+
+fn parse_robot(line) line[2 to]
+    split " v="
+    map (\(pair) pair split ',' map int.1)
+    map (\(ints) v(ints[0], ints[1]))
+    collect;
+
+fn part_1(robots) {
+    w := width // 2;
+    h := height // 2;
+    counts := [0] * 4;
+    for robot in robots {
+        pos := robot[0];
+        vel := robot[1];
+        for _ in 0 to 100 {
+            pos = move_robot(pos, vel);
+        }
+        if (pos.x != w) and (pos.y != h) {
+            quadrant := int(pos.x > w) + (int(pos.y > h) * 2);
+            counts[quadrant] += 1;
+        }
+    }
+    return counts product;
+}
+
+fn part_2(robots) {
+    for seconds in 0 to {
+        column_counts := [0] * width;
+        row_counts := [0] * height;
+        for robot in robots {
+            column_counts[robot[0].x] += 1;
+            row_counts[robot[0].y] += 1;
+        }
+        if (column_counts filter (>= 24) count >= 5) and (row_counts filter (>= 21) count >= 4) {
+            return seconds;
+        }
+        for i in 0 to (robots len) {
+            robots[i][0] = move_robot(robots[i][0], robots[i][1]);
+        }
+    }
+}
+
+fn move_robot(pos, vel) v(pos.x + vel.x mod width, pos.y + vel.y mod height);
