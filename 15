@@ -1,0 +1,136 @@
+import run, nd;
+
+use nd.(Matrix, vector.(v, e, n, w, s));
+
+fn main() run.day 15 parse part_1 part_2;
+
+fn parse(input) {
+    parts := input split "\n\n";
+    warehouse := Matrix.new(parts[0] split '\n');
+    start := warehouse positions find \(pos) warehouse[pos] == '@';
+    warehouse[start] = '.';
+    moves := parts[1] split '\n' flat_map \(line) line map \(c) {
+        if c == '>' {
+            return e();
+        } else if c == '^' {
+            return n();
+        } else if c == '<' {
+            return w();
+        } else {
+            return s();
+        }
+    };
+    return [start, warehouse, moves];
+}
+
+fn part_1(input) {
+    robot := input[0];
+    warehouse := input[1];
+    moves := input[2];
+    
+    for move in moves {
+        pos := robot + move;
+        while warehouse[pos] == 'O' {
+            pos += move;
+        }
+        if warehouse[pos] == '.' {
+            robot += move;
+            warehouse[pos] = 'O';
+            warehouse[robot] = '.';
+        }
+    }
+
+    return score(warehouse, 'O');
+}
+
+fn part_2(input) {
+    robot := input[0];
+    warehouse := input[1];
+    moves := input[2];
+
+    robot = v(robot.x * 2, robot.y);
+    new := Matrix.init(v(warehouse width * 2, warehouse height), '.');
+    for pos in warehouse positions {
+        if warehouse[pos] == '#' {
+            new[v(pos.x * 2, pos.y)] = '#';
+            new[v(pos.x * 2 + 1, pos.y)] = '#';
+        } else if warehouse[pos] == 'O' {
+            new[v(pos.x * 2, pos.y)] = '[';
+            new[v(pos.x * 2 + 1, pos.y)] = ']';
+        }
+    }
+    warehouse = new;
+    
+    for move in moves {
+        dest := warehouse[robot + move];
+        if dest == '.' {
+            robot += move;
+            continue;
+        } else if dest == '#' {
+            continue;
+        }
+        to_push := [];
+        if dest == '[' {
+            to_push push= Box.left(robot + move);
+        } else {
+            to_push push= Box.right(robot + move);
+        }
+        pushed := push_boxes(warehouse, move, to_push);
+        if pushed {
+            robot += move;
+            for box in pushed rev {
+                warehouse[box.left] = '.';
+                warehouse[box.right] = '.';
+                warehouse[box.left + move] = '[';
+                warehouse[box.right + move] = ']';
+            }
+        }
+    }
+
+    return score(warehouse, '[');
+}
+
+fn push_boxes(warehouse, move, to_push) {
+    pushed := [];
+    while to_push len > 0 {
+        boxes := [];
+        for box in to_push {
+            for pos in box pushes move {
+                cell := warehouse[pos];
+                if cell == '#' {
+                    return nil;
+                } else if cell == '[' {
+                    boxes push= Box.left(pos);
+                } else if cell == ']' {
+                    boxes push= Box.right(pos);
+                }
+            }
+        }
+        pushed += to_push;
+        to_push = boxes;
+    }
+    return pushed;
+}
+
+fn score(warehouse, char) warehouse positions filter_map (\(pos) warehouse[pos] == char then (pos.y * 100 + pos.x)) sum;
+
+rec Box(left, right);
+
+impl Box {
+    fn left(pos) Self(left = pos, right = pos + e());
+    
+    fn right(pos) Self(left = pos + w(), right = pos);
+
+    self pushes move {
+        pushes := [];
+        left := self.left + move;
+        if left != self.right {
+            pushes push= left;
+        }
+        right := self.right + move;
+        if right != self.left {
+            pushes push= right;
+        }
+        return pushes;
+    }
+}

@@ -5,7 +5,7 @@ use nd.vector.v;
 let width = 101;
 let height = 103;
 
-fn main() run.day 14 parse part_1 part_2 "main";
+fn main() run.day 14 parse part_1 part_2;
 
 fn parse(input) input split '\n' map parse_robot collect;
 
