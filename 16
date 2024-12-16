@@ -106,7 +106,7 @@ fn shared(input) {
         }
         states pop=;
         if state.score > best {
-            continue;
+            break;
         }
         if state.score < score[state.node][state.dir] {
             if state.node == 1 {
