@@ -95,6 +95,7 @@ fn shared(input) {
     score := [[Int.MAX] * 4] * (nodes len);
     pred := [[nil] * 4] * (nodes len);
 
+    best := Int.MAX;
     states := BinaryHeap.new();
     states push= State(pred = nil, node = 0, dir = 0, score = 0);
 
@@ -104,7 +105,13 @@ fn shared(input) {
             break;
         }
         states pop=;
+        if state.score > best {
+            continue;
+        }
         if state.score < score[state.node][state.dir] {
+            if state.node == 1 {
+                best min= state.score;
+            }
             score[state.node][state.dir] = state.score;
             pred[state.node][state.dir] = [state.pred];
             for dest in adj[state.node][state.dir] {
@@ -115,17 +122,16 @@ fn shared(input) {
         }
     }
 
-    return [score, pred, steps];
+    return [best, score, pred, steps];
 }
 
-fn part_1(output) output[0][1] seq_min;
+fn part_1(output) output[0];
 
 fn part_2(output) {
-    score := output[0];
-    pred := output[1];
-    steps := output[2];
-
-    best := output[0][1] seq_min;
+    best := output[0];
+    score := output[1];
+    pred := output[2];
+    steps := output[3];
 
     visited := [[false] * 4] * (score len);
     stack := [];
