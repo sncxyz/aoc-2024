@@ -4,7 +4,7 @@ use std.collections.BinaryHeap;
 
 use nd.(Matrix, vector.orth);
 
-fn main() run.day 16 shared part_1 part_2 "main";
+fn main() run.day 16 shared part_1 part_2;
 
 fn shared(input) {
     maze := Matrix.new(input split '\n');
