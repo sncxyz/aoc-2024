@@ -1,0 +1,166 @@
+import run, nd;
+
+use std.collections.BinaryHeap;
+
+use nd.(Matrix, vector.orth);
+
+fn main() run.day 16 shared part_1 part_2 "main";
+
+fn shared(input) {
+    maze := Matrix.new(input split '\n');
+    start := maze positions find \(pos) maze[pos] == 'S';
+    end := maze positions find \(pos) maze[pos] == 'E';
+
+    nodes := [start, end];
+    maze[start] = 0;
+    maze[end] = 1;
+    for pos in maze positions {
+        if maze[pos] is '.' {
+            exits := orth() filter (\(dp) maze[pos + dp] is '#' not) count;
+            if exits >= 3 {
+                maze[pos] = nodes len;
+                nodes push= pos;
+            }
+        }
+    }
+    
+    adj := [[nil] * 4] * (nodes len);
+    steps := [[nil] * 4] * (nodes len);
+    for node, pos in nodes {
+        for dir, dp in orth() {
+            if adj[node][dir] or (maze[pos + dp] is '#') {
+                continue;
+            }
+            pos := pos + dp;
+            score := 1;
+            count := 0;
+            loop {
+                if maze[pos] is '.' not {
+                    node_2 := maze[pos];
+                    dir_2 := orth() position \(x) x == dp;
+                    adj[node][dir] = [node_2, dir_2, score];
+                    steps[node_2][dir_2] = count;
+                    dir = dir + 2 mod 4;
+                    dir_2 = dir_2 + 2 mod 4;
+                    adj[node_2][dir_2] = [node, dir, score];
+                    steps[node][dir] = count;
+                    break;
+                }
+                if maze[pos + dp] is '#' not {
+                    score += 1;
+                } else if maze[pos + (dp perp)] is '#' not {
+                    score += 1001;
+                    dp perp=;
+                } else if maze[pos + (dp perp -)] is '#' not {
+                    score += 1001;
+                    dp = dp perp -;
+                } else {
+                    break;
+                }
+                pos += dp;
+                count += 1;
+            }
+        }
+    }
+
+    adj2 := [];
+    for node in 0 to (nodes len) {
+        dirs := [];
+        for dir, dp in orth() {
+            if node != 0 or (dir != 0) and (adj[node][dir + 2 mod 4] not) or (node == 1) {
+                dirs push= [];
+                continue;
+            }
+            dests := [];
+            dest := adj[node][dir];
+            if dest {
+                dests push= dest;
+            }
+            dest = adj[node][dir + 1 mod 4];
+            if dest {
+                dest[2] += 1000;
+                dests push= dest;
+            }
+            dest = adj[node][dir - 1 mod 4];
+            if dest {
+                dest[2] += 1000;
+                dests push= dest;
+            }
+            dirs push= dests;
+        }
+        adj2 push= dirs;
+    }
+
+    adj = adj2;
+    score := [[Int.MAX] * 4] * (nodes len);
+    pred := [[nil] * 4] * (nodes len);
+
+    states := BinaryHeap.new();
+    states push= State(pred = nil, node = 0, dir = 0, score = 0);
+
+    loop {
+        state := states peek;
+        if not state {
+            break;
+        }
+        states pop=;
+        if state.score < score[state.node][state.dir] {
+            score[state.node][state.dir] = state.score;
+            pred[state.node][state.dir] = [state.pred];
+            for dest in adj[state.node][state.dir] {
+                states push= state to dest;
+            }
+        } else if state.score == score[state.node][state.dir] {
+            pred[state.node][state.dir] push= state.pred;
+        }
+    }
+
+    return [score, pred, steps];
+}
+
+fn part_1(output) output[0][1] seq_min;
+
+fn part_2(output) {
+    score := output[0];
+    pred := output[1];
+    steps := output[2];
+
+    best := output[0][1] seq_min;
+
+    visited := [[false] * 4] * (score len);
+    stack := [];
+    for dir in 0 to 4 {
+        if score[1][dir] == best {
+            stack push= [1, dir];
+        }
+    }
+    total := 1;
+    while stack len > 0 {
+        current := stack last;
+        stack pop=;
+        node := current[0];
+        dir := current[1];
+        if visited[node][dir] {
+            continue;
+        }
+        if visited[node] all \(x) not x {
+            total += 1;
+        }
+        visited[node][dir] = true;
+        total += steps[node][dir];
+        for other in pred[node][dir] {
+            if other[0] != 0 {
+                stack push= other;
+            }
+        }
+    }
+    return total;
+}
+
+rec State(pred, node, dir, score);
+
+impl State {
+    self to dest = Self(pred = [self.node, self.dir], node = dest[0], dir = dest[1], score = self.score + dest[2]);
+
+    self cmp rhs = rhs.score cmp self.score;
+}
