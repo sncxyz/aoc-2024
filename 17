@@ -1,0 +1,91 @@
+import run;
+
+fn main() run.day 17 parse part_1 part_2;
+
+fn parse(input) {
+    parts := input split "\n\n";
+    registers := parts[0]
+        split '\n'
+        map (\(line) line[12 to] int)
+        collect;
+    program := parts[1][9 to] split ',' map int.1 collect;
+    return Computer.new(program, registers[0], registers[1], registers[2]);
+}
+
+fn part_1(computer) computer execute map str.1 intersperse ',' collect "";
+
+fn part_2(computer) solve(computer, computer.program len - 1, 0);
+
+fn solve(computer, i, a) {
+    if i < 0 {
+        return a;
+    }
+    target := computer.program[i];
+    for x in 0 to 8 {
+        a := a << 3 | x;
+        if (computer execute a)[0] == target {
+            a = solve(computer, i - 1, a);
+            if a {
+                return a;
+            }
+        }
+    }
+    return nil;
+}
+
+rec Computer(program, ip, a, b, c, output);
+
+impl Computer {
+    fn new(program, a, b, c) Self(program, ip = 0, a, b, c, output = []);
+
+    self execute a {
+        self.a = a;
+        return self execute;
+    }
+
+    self execute {
+        while self.ip < (self.program len) {
+            self execute_instruction=;
+        }
+        return self.output;
+    }
+
+    self execute_instruction {
+        opcode := self.program[self.ip];
+        self.ip += 1;
+        operand := self.program[self.ip];
+        self.ip += 1;
+        if opcode == 0 {
+            self.a >>= self combo operand;
+        } else if opcode == 1 {
+            self.b xor= operand;
+        } else if opcode == 2 {
+            self.b = self combo operand mod 8;
+        } else if opcode == 3 {
+            if self.a != 0 {
+                self.ip = operand;
+            }
+        } else if opcode == 4 {
+            self.b xor= self.c;
+        } else if opcode == 5 {
+            self.output push= self combo operand mod 8;
+        } else if opcode == 6 {
+            self.b = self.a >> (self combo operand);
+        } else if opcode == 7 {
+            self.c = self.a >> (self combo operand);
+        }
+        return self;
+    }
+
+    self combo operand {
+        if operand <= 3 {
+            return operand;
+        } else if operand == 4 {
+            return self.a;
+        } else if operand == 5 {
+            return self.b;
+        } else if operand == 6 {
+            return self.c;
+        }
+    }
+}
