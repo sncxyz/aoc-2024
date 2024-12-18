@@ -1,0 +1,89 @@
+import run, nd, search;
+
+use nd.(Matrix, vector.(orth, v));
+
+let width = 71;
+let height = 71;
+let count = 1024;
+
+fn main() run.day 18 parse part_1 part_2;
+
+fn parse(input) input
+    split '\n'
+    map (\(line) line
+        split ','
+        map int.1
+    )
+    map (\(parts) v(parts[0], parts[1]))
+    collect;
+
+fn part_1(bytes) {
+    exit := v(width - 1, height - 1);
+    space := Matrix.init(v(width, height), false);
+    for byte in bytes[0 to count] {
+        space[byte] = true;
+    }
+    goal := search.a*(
+        State(pos = v(0, 0), steps = 0),
+        \(state) orth()
+            filter_map \(dp) space
+                get (state.pos + dp)
+                is false
+                then State(pos = state.pos + dp, steps = state.steps + 1),
+        \(state) state.pos,
+        \(state) state.steps,
+        \(state) state.pos manhattan exit,
+    )
+    find \(state) state.pos == exit;
+
+    return goal.steps;
+}
+
+fn part_2(bytes) {
+    start := v(0, 0);
+    exit := v(width - 1, height - 1);
+    space := Matrix.init(v(width, height), false);
+    for byte in bytes {
+        space[byte] = true;
+    }
+
+    parent := Matrix.init(v(width, height), nil);
+    for pos in space positions {
+        if not space[pos] and (not parent[pos]) {
+            for p in search.dfs(
+                pos,
+                \(pos) orth()
+                    filter_map \(dp) space
+                        get (pos + dp)
+                        is false
+                        then (pos + dp),
+                \(pos) pos,
+            ) {
+                parent[p] = pos;
+            }
+        }
+    }
+
+    for byte in bytes rev {
+        parent[byte] = byte;
+        for dp in orth() {
+            pos := byte + dp;
+            par := parent get pos;
+            if par {
+                while pos != par {
+                    parent[pos] = byte;
+                    pos = par;
+                    par = parent[pos];
+                }
+                parent[pos] = byte;
+            }
+        }
+        parent[start] = parent[parent[start]];
+        parent[exit] = parent[parent[exit]];
+        if parent[start] == parent[exit] {
+            return str(byte.x) + ',' + str(byte.y);
+        }
+    }
+}
+
+rec State(pos, steps);
