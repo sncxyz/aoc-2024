@@ -1,0 +1,56 @@
+import run, nd;
+
+use nd.(Matrix, vector.(orth, v));
+
+let threshold = 100;
+
+fn main() run.day 20 parse part_1 part_2;
+
+fn parse(input) {
+    track_map := Matrix.new(input split "\n");
+    start := track_map positions find \(pos) track_map[pos] == 'S';
+    end := track_map positions find \(pos) track_map[pos] == 'E';
+    track_map[end] = '.';
+
+    track := [];
+    pos := start;
+    dist := 0;
+    track_map[start] = 0;
+    while pos != end {
+        for dp in orth() {
+            new := pos + dp;
+            if new is (track last) not and (track_map[new] is '.') {
+                track push= pos;
+                pos = new;
+                dist += 1;
+                track_map[pos] = dist;
+                break;
+            }
+        }
+    }
+    track push= end;
+
+    return [track_map, track];
+}
+
+fn part_1(input) part_*(input[0], input[1], 2);
+
+fn part_2(input) part_*(input[0], input[1], 20);
+
+fn part_*(track_map, track, limit) {
+    count := 0;
+    for i, pos in track {
+        for x in - limit to (limit + 1) {
+            range := limit - (abs x);
+            for y in - range to (range + 1) {
+                dist := abs x + (abs y);
+                dest := v(pos.x + x, pos.y + y);
+                j := track_map get dest;
+                if is(j, Int) {
+                    count += j - i - dist >= threshold int;
+                }
+            }
+        }
+    }
+    return count;
+}
