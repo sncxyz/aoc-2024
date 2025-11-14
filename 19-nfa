@@ -1,0 +1,88 @@
+import run;
+
+fn main() run.day 19 shared part_1 part_2;
+
+fn shared(input) {
+    lines := input split "\n" collect;
+    towels := lines[0]
+        split ", "
+        map parse_colours
+        collect
+        sort_by_key len.1
+        reverse;
+
+    delta := [[nil] * 5];
+    final := [false];
+    states := [0] * (towels len);
+    i := 0;
+    end := false;
+    while not end {
+        end = true;
+        for j, towel in towels {
+            state := states[j];
+            if not state {
+                continue;
+            }
+            if i == (towel len) {
+                final[state] = true;
+                states[j] = nil;
+                continue;
+            }
+            c := towel[i];
+            new := delta[state][c];
+            if new {
+                end = false;
+                states[j] = new;
+            } else if i + 1 == (towel len) {
+                states[j] = nil;
+                delta[state][c] = 0;
+            } else {
+                end = false;
+                new := delta len;
+                delta push= [nil] * 5;
+                final push= false;
+                states[j] = new;
+                delta[state][c] = new;
+            }
+        }
+        i += 1;
+    }
+
+    return lines[2 to]
+        map parse_colours
+        map (\(design) solve(delta, final, design))
+        collect;
+}
+
+fn parse_colours(colours) colours map parse_colour collect;
+
+fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \(c) c is colour;
+
+fn solve(delta, final, design) {
+    counts := [0] * (delta len);
+    counts[0] = 1;
+    for c in design {
+        total := 0;
+        for state in 0 to (delta len) rev {
+            if counts[state] == 0 {
+                continue;
+            }
+            dest := delta[state][c];
+            if dest is 0 {
+                total += counts[state];
+            } else if dest {
+                counts[dest] = counts[state];
+                if final[dest] {
+                    total += counts[state];
+                }
+            }
+            counts[state] = 0;
+        }
+        counts[0] = total;
+    }
+    return counts[0];
+}
+
+fn part_1(output) output filter (> 0) count;
+
+fn part_2(output) output sum;

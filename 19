@@ -1,0 +1,40 @@
+import run, search;
+
+fn main() run.day 19 shared part_1 part_2;
+
+fn shared(input) {
+    lines := input split "\n" collect;
+    towels := lines[0]
+        split ", "
+        map parse_colours
+        collect;
+    return lines[2 to]
+        map parse_colours
+        map (\(design) solve(towels, design))
+        collect;
+}
+
+fn parse_colours(colours) colours map parse_colour collect;
+
+fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \(c) c is colour;
+
+fn solve(towels, design) {
+    counts := [0] * (design len + 1);
+    counts[0] = 1;
+    for i in 0 to (design len) {
+        if counts[i] == 0 {
+            continue;
+        }
+        for towel in towels {
+            j := i + (towel len);
+            if j <= (design len) and (design[i to j] == towel) {
+                counts[j] += counts[i];
+            }
+        }
+    }
+    return counts[design len];
+}
+
+fn part_1(output) output filter (> 0) count;
+
+fn part_2(output) output sum;
