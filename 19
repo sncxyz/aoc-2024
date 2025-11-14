@@ -1,4 +1,4 @@
-import run, search;
+import run;
 
 fn main() run.day 19 shared part_1 part_2;
 
