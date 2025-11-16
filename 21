@@ -1,0 +1,81 @@
+import run;
+
+fn main() run.day 21 parse part_1 part_2;
+
+fn parse(input) input split "\n" map (\(code) code[0 to (code len - 1)]) collect;
+
+fn part_1(codes) part_*(codes, 2);
+
+fn part_2(codes) part_*(codes, 25);
+
+fn part_*(codes, n) {
+    keypads := Keypads.new();
+    for code in codes {
+        keypads set_count= code, n + 1;
+    }
+    return codes map (\(code) code int * keypads.counts[code : (n + 1)]) sum;
+}
+
+rec Keypads(dirs, succs, counts);
+
+impl Keypads {
+    fn new() {
+        # it's likely some of these directions aren't optimal (I haven't checked the ones not used by the example or my input)
+        dirs := [
+            'A': ['A': "", '0': "<", '1': "^<<", '2': "<^", '3': "^", '4': "^^<<", '5': "^^<", '6': "^^", '7': "^^^<<", '8': "^^^<", '9': "^^^"],
+            '0': ['A': ">", '0': "", '1': "^<", '2': "^", '3': "^>", '4': "^^<", '5': "^^", '6': "^^>", '7': "^^^<", '8': "^^^", '9': "^^^>"],
+            '1': ['A': ">>v", '0': ">v", '1': "", '2': ">", '3': ">>", '4': "^", '5': "^>", '6': "^>>", '7': "^^", '8': "^^>", '9': "^^>>"],
+            '2': ['A': ">v", '0': "v", '1': "<", '2': "", '3': ">", '4': "^<", '5': "^", '6': "^>", '7': "<^^", '8': "^^", '9': "^^>"],
+            '3': ['A': "v", '0': "<v", '1': "<<", '2': "<", '3': "", '4': "<<^", '5': "<^", '6': "^", '7': "<<^^", '8': "<^^", '9': "^^"],
+            '4': ['A': ">>vv", '0': ">vv", '1': "v", '2': ">v", '3': ">>v", '4': "", '5': ">", '6': ">>", '7': "^", '8': "^>", '9': "^>>"],
+            '5': ['A': ">vv", '0': "vv", '1': "<v", '2': "v", '3': ">v", '4': "<", '5': "", '6': ">", '7': "<^", '8': "^", '9': "^>"],
+            '6': ['A': "vv", '0': "<vv", '1': "<<v", '2': "<v", '3': "v", '4': "<<", '5': "<", '6': "", '7': "<<^", '8': "<^", '9': "^"],
+            '7': ['A': ">>vvv", '0': ">vvv", '1': "vv", '2': ">vv", '3': ">>vv", '4': "v", '5': ">v", '6': ">>v", '7': "", '8': ">", '9': ">>"],
+            '8': ['A': ">vvv", '0': "vvv", '1': "<vv", '2': "vv", '3': "vv>", '4': "<v", '5': "v", '6': "v>", '7': "<", '8': "", '9': ">"],
+            '9': ['A': "vvv", '0': "<vvv", '1': "<<vv", '2': "<vv", '3': "vv", '4': "<<v", '5': "<v", '6': "v", '7': "<<", '8': "<", '9': ""],
+            'A': ['>': "v", '^': "<", '<': "v<<", 'v': "<v"],
+            '>': ['A': "^", '>': "", '^': "<^", '<': "<<", 'v': "<"],
+            '^': ['A': ">", '>': "v>", '^': "", '<': "v<", 'v': "v"],
+            '<': ['A': ">>^", '>': ">>", '^': ">^", '<': "", 'v': ">"],
+            'v': ['A': "^>", '>': ">", '^': "^", '<': "<", 'v': ""],
+        ];
+        dirs_map := Map.new();
+        for x in dirs {
+            for y in x.b {
+                dirs_map[x.a : y.a] = y.b;
+            }
+        }
+        return Self(dirs = dirs_map, succs = Map.new(), counts = Map.new());
+    }
+
+    self set_succs segment {
+        if self.succs contains segment {
+            return self;
+        }
+        self.succs[segment] = "A"
+            + segment
+            + "A"
+            windows 2
+            map (\(pair) self.dirs[pair[0]: pair[1]])
+            collect;
+        return self;
+    }
+
+    self set_count segment n {
+        if self.counts contains (segment : n) {
+            return self;
+        }
+        if n == 0 {
+            self.counts[segment : 0] = segment len + 1;
+            return self;
+        }
+        self set_succs= segment;
+        count := 0;
+        for succ in self.succs[segment] {
+            self set_count= succ, n - 1;
+            count += self.counts[succ : (n - 1)];
+        }
+        self.counts[segment : n] = count;
+        return self;
+    }
+}
