@@ -28,7 +28,7 @@ impl All {
         part_1_time := end - start -> show_time;
 
         part_1 str=;
-        pad := 20 - (part_1 len) max 0;
+        pad := 20 - (part_1 len) max 1;
 
         println("Part 1: " + part_1 + (" " * pad) + part_1_time);
 
@@ -39,7 +39,7 @@ impl All {
             part_2_time := end - start -> show_time;
 
             part_2 str=;
-            pad = 20 - (part_2 len) max 0;
+            pad = 20 - (part_2 len) max 1;
 
             println("Part 2: " + part_2 + (" " * pad) + part_2_time);
         }

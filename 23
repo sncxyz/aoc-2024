@@ -1,0 +1,69 @@
+import run;
+
+fn main() run.day 23 parse part_1 part_2;
+
+fn parse(input) {
+    graph := [Set.new()] * (26 * 26);
+    for edge in input split "\n" {
+        a := get_id(edge[0 to 2]);
+        b := get_id(edge[3 to 5]);
+        if a < b {
+            graph[a] insert= b;
+        } else {
+            graph[b] insert= a;
+        }
+    }
+    return graph;
+}
+
+fn part_1(graph) part_*(graph, \(_) true)
+    filter (\(clique) clique any \(v) v[0] == 't')
+    count;
+
+fn part_2(graph) part_*(graph, \(count) count == 1)
+    index 0
+    reduce \(a, b) a + "," + b;
+
+fn part_*(graph, stop) {
+    cliques := graph
+        map (\(neighbours) neighbours list map (\(x) [x]) collect)
+        collect;
+    
+    loop {
+        count := 0;
+        for u in 0 to (26 * 26) {
+            cliques[u] = [];
+            for v in graph[u] list {
+                for clique in cliques[v] {
+                    if clique all \(w) graph[u] contains w {
+                        cliques[u] push= clique push v;
+                        count += 1;
+                    }
+                }
+            }
+        }
+        if stop(count) {
+            break;
+        }
+    }
+
+    return cliques
+        enumerate
+        flat_map (\(pair)
+            pair[1]
+            map \(clique)
+                clique
+                push pair[0]
+                rev
+                map get_computer
+                collect
+        );
+}
+
+fn get_id(computer) to_int(computer[0]) * 26 + to_int(computer[1]);
+
+fn to_int(c) c int - ('a' int);
+
+fn get_computer(id) to_char(id // 26) str + to_char(id mod 26);
+
+fn to_char(x) x + ('a' int) char;
