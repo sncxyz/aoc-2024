@@ -1,0 +1,32 @@
+import run;
+
+fn main() run.day 25 parse part_1 nil;
+
+fn parse(input) input
+    -> parse_sections
+    fold [[], []] \(heights, section) heights
+        map_index (
+            section[0] all (\(c) c == '#') int
+        )
+        \(heights) heights push (0 to 5
+            map (\(i) 0 to 7
+                filter (\(j) section[j][i] == '#')
+                count
+                - 1
+            )
+            collect
+        );
+
+fn parse_sections(input) input
+    split "\n\n"
+    map \(section) section
+        split "\n"
+        collect;
+
+fn part_1(input) input[0]
+    flat_map (\(key) input[1]
+        filter \(lock) key
+            zip_with lock +.2
+            all (<= 5)
+    )
+    count;
