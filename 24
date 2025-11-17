@@ -1,0 +1,127 @@
+import run;
+
+fn main() run.day 24 parse part_1 part_2;
+
+fn parse(input) {
+    parts := input split "\n\n" collect;
+    wires := Map.new();
+    for line in parts[0] split "\n" {
+        parts := line split ": " collect;
+        wires[parts[0]] = parts[1] == "1";
+    }
+    for line in parts[1] split "\n" {
+        parts := line split " -> " collect;
+        left_parts := parts[0] split " " collect;
+        wires[parts[1]] = Gate(left = left_parts[0], right = left_parts[2], kind = left_parts[1]);
+    }
+    return wires;
+}
+
+fn part_1(wires) {
+    total := 0;
+    for wire in wires keys filter (\(w) w[0] == 'z') collect sort rev {
+        wires := compute(wires, wire);
+        total *= 2;
+        total += wires[wire] int;
+    }
+    return total;
+}
+
+fn part_2(wires) {
+    categories := Map.new();
+    for gate in wires pairs {
+        if is(gate[1], Bool) {
+            wires remove= gate[0];
+        } else {
+            categories[gate[0]] = categorise(gate[1]);
+        }
+    }
+
+    last_output := wires keys filter_map (\(k) k[0] == 'z' then (k[1 to] int?)) seq_max;
+    mistakes := [];
+    for gate in wires pairs {
+        wire := gate[0];
+        gate = gate[1];
+        category := categories[wire];
+        if wire[0] == 'z' {
+            n := wire[1 to] int;
+            if n == 0 {
+                if category is OuterXor() not {
+                    mistakes push= wire;
+                }
+            } else if n == last_output {
+                if category is Or() not {
+                    mistakes push= wire;
+                }
+            } else {
+                if category is InnerXor() not {
+                    mistakes push= wire;
+                }
+            }
+        } else if category is InnerAnd() or (category is InnerXor()) {
+            left := categories[gate.left];
+            right := categories[gate.right];
+            if left is OuterXor() or (left is Or()) or (left is FirstOuterAnd()) not {
+                mistakes push= gate.left;
+            }
+            if right is OuterXor() or (right is Or()) or (right is FirstOuterAnd()) not {
+                mistakes push= gate.right;
+            }
+        } else if category is Or() {
+            left := categories[gate.left];
+            right := categories[gate.right];
+            if left is OuterAnd() or (left is InnerAnd()) not {
+                mistakes push= gate.left;
+            }
+            if right is OuterAnd() or (right is InnerAnd()) not {
+                mistakes push= gate.right;
+            }
+        }
+    }
+
+    if mistakes len != 8 {
+        return "?";
+    }
+
+    return mistakes sort reduce \(a, b) a + "," + b;
+}
+
+fn compute(wires, wire) {
+    if is(wires[wire], Bool) {
+        return wires;
+    }
+    gate := wires[wire];
+    wires = compute(wires, gate.left);
+    wires = compute(wires, gate.right);
+    f := gate.kind == "AND" then &.2
+        or (gate.kind == "OR" then |.2)
+        or (gate.kind == "XOR" then xor.2);
+    wires[wire] = f(wires[gate.left], wires[gate.right]);
+    return wires;
+}
+
+fn categorise(gate) {
+    input := gate.left;
+    outer := input[0] == 'x' or (input[0] == 'y');
+    first := outer and (input[1 to] int == 0);
+    return gate.kind == "AND" then (
+            first then FirstOuterAnd()
+                or (outer then OuterAnd())
+                or InnerAnd()
+        )
+        or (gate.kind == "XOR" then (
+            outer then OuterXor()
+                or InnerXor()
+            )
+        )
+        or (gate.kind == "OR" then Or());
+}
+
+rec Gate(left, right, kind);
+
+rec OuterXor();
+rec OuterAnd();
+rec FirstOuterAnd();
+rec InnerXor();
+rec InnerAnd();
+rec Or();
