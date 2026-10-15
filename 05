@@ -9,11 +9,11 @@ fn parse(input) {
     return [rules, updates];
 }
 
-fn parse_ints(lines, delim) lines split '\n' map (\(line) line split delim map int.1 collect);
+fn parse_ints(lines, delim) lines split '\n' map \line (line split delim map int.1 collect);
 
-fn part_1(manual) manual[1] filter (\(u) fix_pass(manual[0], u) is nil) map middle sum;
+fn part_1(manual) manual[1] filter \u (fix_pass(manual[0], u) is nil) map middle sum;
 
-fn part_2(manual) manual[1] filter_map (\(u) fix_pass(manual[0], u)) map (\(u) fix(manual[0], u) -> middle) sum;
+fn part_2(manual) manual[1] filter_map \u fix_pass(manual[0], u) map \u (fix(manual[0], u) -> middle) sum;
 
 fn fix_pass(rules, update) {
     changed := false;

@@ -6,7 +6,7 @@ fn main() run.day 6 shared part_1 part_2;
 
 fn shared(input) {
     map := Matrix.new(input split '\n');
-    guard := map enumerate find (\(x) x[1] == '^');
+    guard := map enumerate find \x (x[1] == '^');
     start := guard[0];
     map[start] = '.';
     pos := start;
@@ -90,7 +90,7 @@ fn part_2(input) {
         obstr := candidate[0];
         dir := candidate[1];
         start := obstr - dir;
-        start_dir := [w(), n(), e(), s()] position \(d) d == dir;
+        start_dir := [w(), n(), e(), s()] position \d (d == dir);
 
         tortoise := start;
         hare := start;

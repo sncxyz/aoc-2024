@@ -8,15 +8,15 @@ fn main() run.day 16 shared part_1 part_2;
 
 fn shared(input) {
     maze := Matrix.new(input split '\n');
-    start := maze positions find \(pos) maze[pos] == 'S';
-    end := maze positions find \(pos) maze[pos] == 'E';
+    start := maze positions find \pos (maze[pos] == 'S');
+    end := maze positions find \pos (maze[pos] == 'E');
 
     nodes := [start, end];
     maze[start] = 0;
     maze[end] = 1;
     for pos in maze positions {
         if maze[pos] is '.' {
-            exits := orth() filter (\(dp) maze[pos + dp] is '#' not) count;
+            exits := orth() filter \dp (maze[pos + dp] is '#' not) count;
             if exits >= 3 {
                 maze[pos] = nodes len;
                 nodes push= pos;
@@ -37,7 +37,7 @@ fn shared(input) {
             loop {
                 if maze[pos] is '.' not {
                     node_2 := maze[pos];
-                    dir_2 := orth() position \(x) x == dp;
+                    dir_2 := orth() position \x (x == dp);
                     adj[node][dir] = [node_2, dir_2, score];
                     steps[node_2][dir_2] = count;
                     dir = dir + 2 mod 4;
@@ -149,7 +149,7 @@ fn part_2(output) {
         if visited[node][dir] {
             continue;
         }
-        if visited[node] all \(x) not x {
+        if visited[node] all \x (not x) {
             total += 1;
         }
         visited[node][dir] = true;

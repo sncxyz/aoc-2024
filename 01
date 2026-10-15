@@ -2,7 +2,7 @@ import run;
 
 fn main() run.day 1 parse part_1 part_2;
 
-fn parse(input) input split '\n' map (\(line) line split "   " map int.1 collect) unzip;
+fn parse(input) input split '\n' map \line (line split "   " map int.1 collect) unzip;
 
 fn part_1(ids) ids[0] sort zip_with (ids[1] sort) abs_diff.2 sum;
 
@@ -15,5 +15,5 @@ fn part_2(ids) {
             counts[id] = 1;
         }
     }
-    return ids[0] map (\(id) counts get id or 0 * id) sum;
+    return ids[0] map \id (counts get id or 0 * id) sum;
 }

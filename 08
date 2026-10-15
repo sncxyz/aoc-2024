@@ -35,7 +35,7 @@ fn parse(input) {
 
 fn part_1(input) part_*(input, \(p, dp) [p + dp]);
 
-fn part_2(input) part_*(input, \(p, dp) 0 to map \(i) dp * i + p);
+fn part_2(input) part_*(input, \(p, dp) (0 to map \i (dp * i + p)));
 
 fn part_*(input, f) {
     pairs := input[0];

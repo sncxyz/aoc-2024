@@ -6,11 +6,11 @@ fn parse(input) input split "\n\n" map parse_machine collect;
 
 fn parse_machine(lines) lines
     split '\n'
-    map (\(line) line
+    map \line (line
         split 'X'
         nth 1
         split ", Y"
-        map (\(s) s[1 to] int)
+        map \s (s[1 to] int)
         collect
     )
     collect;

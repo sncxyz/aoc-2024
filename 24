@@ -19,7 +19,7 @@ fn parse(input) {
 
 fn part_1(wires) {
     total := 0;
-    for wire in wires keys filter (\(w) w[0] == 'z') collect sort rev {
+    for wire in wires keys filter \w (w[0] == 'z') collect sort rev {
         wires := compute(wires, wire);
         total *= 2;
         total += wires[wire] int;
@@ -37,7 +37,7 @@ fn part_2(wires) {
         }
     }
 
-    last_output := wires keys filter_map (\(k) k[0] == 'z' then (k[1 to] int?)) seq_max;
+    last_output := wires keys filter_map \k (k[0] == 'z' then (k[1 to] int?)) seq_max;
     mistakes := [];
     for gate in wires pairs {
         wire := gate[0];
@@ -83,7 +83,7 @@ fn part_2(wires) {
         return "?";
     }
 
-    return mistakes sort reduce \(a, b) a + "," + b;
+    return mistakes sort reduce \(a, b) (a + "," + b);
 }
 
 fn compute(wires, wire) {

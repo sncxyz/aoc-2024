@@ -6,7 +6,7 @@ fn parse(input) {
     parts := input split "\n\n";
     registers := parts[0]
         split '\n'
-        map (\(line) line[12 to] int)
+        map \line (line[12 to] int)
         collect;
     program := parts[1][9 to] split ',' map int.1 collect;
     return Computer.new(program, registers[0], registers[1], registers[2]);

@@ -10,13 +10,13 @@ fn shared(input) {
         collect;
     return lines[2 to]
         map parse_colours
-        map (\(design) solve(towels, design))
+        map \design solve(towels, design)
         collect;
 }
 
 fn parse_colours(colours) colours map parse_colour collect;
 
-fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \(c) c is colour;
+fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \c (c is colour);
 
 fn solve(towels, design) {
     counts := [0] * (design len + 1);

@@ -2,7 +2,7 @@ import run;
 
 fn main() run.day 7 parse part_1 part_2;
 
-fn parse(input) input split '\n' map \(line) {
+fn parse(input) input split '\n' map \line {
     parts := line split ": ";
     return [parts[0] int, parts[1] split ' ' map int.1 collect];
 };
@@ -11,7 +11,7 @@ fn part_1(eqs) part_*(eqs, false);
 
 fn part_2(eqs) part_*(eqs, true);
 
-fn part_*(eqs, concat?) eqs filter_map (\(eq) solve?(eq[0], eq[1], concat?) then eq[0]) sum;
+fn part_*(eqs, concat?) eqs filter_map \eq (solve?(eq[0], eq[1], concat?) then eq[0]) sum;
 
 fn solve?(answer, args, concat?) {
     len := args len;

@@ -11,8 +11,8 @@ fn parse(input) input split '\n' map parse_robot collect;
 
 fn parse_robot(line) line[2 to]
     split " v="
-    map (\(pair) pair split ',' map int.1)
-    map (\(ints) v(ints[0], ints[1]))
+    map \pair (pair split ',' map int.1)
+    map \ints v(ints[0], ints[1])
     collect;
 
 fn part_1(robots) {

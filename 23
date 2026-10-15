@@ -16,17 +16,17 @@ fn parse(input) {
     return graph;
 }
 
-fn part_1(graph) part_*(graph, \(_) true)
-    filter (\(clique) clique any \(v) v[0] == 't')
+fn part_1(graph) part_*(graph, \_ true)
+    filter \clique (clique any \v (v[0] == 't'))
     count;
 
-fn part_2(graph) part_*(graph, \(count) count == 1)
+fn part_2(graph) part_*(graph, \count (count == 1))
     index 0
-    reduce \(a, b) a + "," + b;
+    reduce \(a, b) (a + "," + b);
 
 fn part_*(graph, stop) {
     cliques := graph
-        map (\(neighbours) neighbours list map (\(x) [x]) collect)
+        map \neighbours (neighbours list map \x [x] collect)
         collect;
     
     loop {
@@ -35,7 +35,7 @@ fn part_*(graph, stop) {
             cliques[u] = [];
             for v in graph[u] list {
                 for clique in cliques[v] {
-                    if clique all \(w) graph[u] contains w {
+                    if clique all \w (graph[u] contains w) {
                         cliques[u] push= clique push v;
                         count += 1;
                     }
@@ -49,14 +49,13 @@ fn part_*(graph, stop) {
 
     return cliques
         enumerate
-        flat_map (\(pair)
-            pair[1]
-            map \(clique)
-                clique
+        flat_map \pair (pair[1]
+            map \clique (clique
                 push pair[0]
                 rev
                 map get_computer
                 collect
+            )
         );
 }
 

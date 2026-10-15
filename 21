@@ -2,7 +2,7 @@ import run;
 
 fn main() run.day 21 parse part_1 part_2;
 
-fn parse(input) input split "\n" map (\(code) code[0 to (code len - 1)]) collect;
+fn parse(input) input split "\n" map \code code[0 to (code len - 1)] collect;
 
 fn part_1(codes) part_*(codes, 2);
 
@@ -13,7 +13,7 @@ fn part_*(codes, n) {
     for code in codes {
         keypads set_count= code, n + 1;
     }
-    return codes map (\(code) code int * keypads.counts[code : (n + 1)]) sum;
+    return codes map \code (code int * keypads.counts[code : (n + 1)]) sum;
 }
 
 rec Keypads(dirs, succs, counts);
@@ -56,7 +56,7 @@ impl Keypads {
             + segment
             + "A"
             windows 2
-            map (\(pair) self.dirs[pair[0]: pair[1]])
+            map \pair self.dirs[pair[0]: pair[1]]
             collect;
         return self;
     }

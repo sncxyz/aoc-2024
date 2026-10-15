@@ -50,13 +50,13 @@ fn shared(input) {
 
     return lines[2 to]
         map parse_colours
-        map (\(design) solve(delta, final, design))
+        map \design solve(delta, final, design)
         collect;
 }
 
 fn parse_colours(colours) colours map parse_colour collect;
 
-fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \(c) c is colour;
+fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \c (c is colour);
 
 fn solve(delta, final, design) {
     counts := [0] * (delta len);

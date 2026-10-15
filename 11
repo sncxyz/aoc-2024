@@ -9,7 +9,7 @@ fn part_1(stones) part_*(stones, 25);
 fn part_2(stones) part_*(stones, 75);
 
 fn part_*(stones, n) stones
-    fold ([Map.new()] * (n + 1)) (\(cache, stone) blink(cache, n, stone))
+    fold ([Map.new()] * (n + 1)) \(cache, stone) blink(cache, n, stone)
     index n values sum;
 
 fn blink(cache, n, stone) {

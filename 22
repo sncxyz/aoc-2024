@@ -5,7 +5,7 @@ fn main() run.day 22 parse part_1 part_2;
 fn parse(input) input split "\n" map int.1;
 
 fn part_1(nums) nums
-    map (\(n) 0 to 2000 fold n \(n, _) succ(n))
+    map \n (0 to 2000 fold n \(n, _) succ(n))
     sum;
 
 fn part_2(nums) {

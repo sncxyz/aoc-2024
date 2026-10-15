@@ -18,13 +18,13 @@ fn shared(input) {
     return regions;
 }
 
-fn part_1(regions) regions map (\(region) region.area * region.perim) sum;
+fn part_1(regions) regions map \region (region.area * region.perim) sum;
 
 fn part_2(regions) regions
-    map (\(region) region.dirs
-        map (\(dir) dir
+    map \region (region.dirs
+        map \dir (dir
             list
-            filter (\(pos) dir contains (pos + e()) not)
+            filter \pos (dir contains (pos + e()) not)
             count
         )
         sum

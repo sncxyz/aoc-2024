@@ -7,9 +7,9 @@ fn main() run.day 15 parse part_1 part_2;
 fn parse(input) {
     parts := input split "\n\n";
     warehouse := Matrix.new(parts[0] split '\n');
-    start := warehouse positions find \(pos) warehouse[pos] == '@';
+    start := warehouse positions find \pos (warehouse[pos] == '@');
     warehouse[start] = '.';
-    moves := parts[1] split '\n' flat_map \(line) line map \(c) {
+    moves := parts[1] split '\n' flat_map \line (line map \c {
         if c == '>' {
             return e();
         } else if c == '^' {
@@ -19,7 +19,7 @@ fn parse(input) {
         } else {
             return s();
         }
-    };
+    });
     return [start, warehouse, moves];
 }
 
@@ -112,7 +112,7 @@ fn push_boxes(warehouse, move, to_push) {
     return pushed;
 }
 
-fn score(warehouse, char) warehouse positions filter_map (\(pos) warehouse[pos] == char then (pos.y * 100 + pos.x)) sum;
+fn score(warehouse, char) warehouse positions filter_map \pos (warehouse[pos] == char then (pos.y * 100 + pos.x)) sum;
 
 rec Box(left, right);
 

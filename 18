@@ -10,11 +10,11 @@ fn main() run.day 18 parse part_1 part_2;
 
 fn parse(input) input
     split '\n'
-    map (\(line) line
+    map \line (line
         split ','
         map int.1
     )
-    map (\(parts) v(parts[0], parts[1]))
+    map \parts v(parts[0], parts[1])
     collect;
 
 fn part_1(bytes) {
@@ -25,16 +25,18 @@ fn part_1(bytes) {
     }
     goal := search.a*(
         State(pos = v(0, 0), steps = 0),
-        \(state) orth()
-            filter_map \(dp) space
+        \state (orth()
+            filter_map \dp (space
                 get (state.pos + dp)
                 is false
-                then State(pos = state.pos + dp, steps = state.steps + 1),
-        \(state) state.pos,
-        \(state) state.steps,
-        \(state) state.pos manhattan exit,
+                then State(pos = state.pos + dp, steps = state.steps + 1)
+            )
+        ),
+        \state state.pos,
+        \state state.steps,
+        \state (state.pos manhattan exit),
     )
-    find \(state) state.pos == exit;
+    find \state (state.pos == exit);
 
     return goal.steps;
 }
@@ -52,12 +54,14 @@ fn part_2(bytes) {
         if not space[pos] and (not parent[pos]) {
             for p in search.dfs(
                 pos,
-                \(pos) orth()
-                    filter_map \(dp) space
+                \pos (orth()
+                    filter_map \dp (space
                         get (pos + dp)
                         is false
-                        then (pos + dp),
-                \(pos) pos,
+                        then (pos + dp)
+                    )
+                ),
+                \pos pos,
             ) {
                 parent[p] = pos;
             }
