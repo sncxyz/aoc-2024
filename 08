@@ -22,15 +22,15 @@ fn parse(input) {
 
     pairs := [];
     for locs in nodes values {
-        for i in 0 to (locs len - 1) {
-            for j in i + 1 to (locs len) {
+        for i in 0 to (locs.len - 1) {
+            for j in i + 1 to locs.len {
                 pairs push= [locs[i], locs[j]];
                 pairs push= [locs[j], locs[i]];
             }
         }
     }
 
-    return [pairs, map dim];
+    return [pairs, map.dim];
 }
 
 fn part_1(input) part_*(input, \(p, dp) [p + dp]);

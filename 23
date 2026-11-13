@@ -21,7 +21,7 @@ fn part_1(graph) part_*(graph, \_ true)
     count;
 
 fn part_2(graph) part_*(graph, \count (count == 1))
-    index 0
+    first
     reduce \(a, b) (a + "," + b);
 
 fn part_*(graph, stop) {

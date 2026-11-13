@@ -20,8 +20,8 @@ fn shared(map) map
     -> \x [x, map dim];
 
 fn pairs(nodes) nodes values
-    flat_map \locs (0 to (locs len - 1)
-        flat_map \i (i + 1 to (locs len)
+    flat_map \locs (0 to (locs.len - 1)
+        flat_map \i (i + 1 to locs.len
             flat_map \j [[locs[i], locs[j]], [locs[j], locs[i]]]
         )
     )

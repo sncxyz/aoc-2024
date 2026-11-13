@@ -17,7 +17,7 @@ fn parse_machine(lines) lines
 
 fn part_1(machines) machines filter_map solve sum;
 
-fn part_2(machines) machines map (map_index 2 (map (+ 10000000000000))) filter_map solve sum;
+fn part_2(machines) machines map (map_index 2 \x (x map (+ 10000000000000) collect)) filter_map solve sum;
 
 fn solve(m) cost(
     (m[2][0] * m[1][1]) - (m[2][1] * m[1][0]),

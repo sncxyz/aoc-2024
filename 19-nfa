@@ -13,7 +13,7 @@ fn shared(input) {
 
     delta := [[nil] * 5];
     final := [false];
-    states := [0] * (towels len);
+    states := [0] * towels.len;
     i := 0;
     end := false;
     while not end {
@@ -23,7 +23,7 @@ fn shared(input) {
             if not state {
                 continue;
             }
-            if i == (towel len) {
+            if i == towel.len {
                 final[state] = true;
                 states[j] = nil;
                 continue;
@@ -33,12 +33,12 @@ fn shared(input) {
             if new {
                 end = false;
                 states[j] = new;
-            } else if i + 1 == (towel len) {
+            } else if i + 1 == towel.len {
                 states[j] = nil;
                 delta[state][c] = 0;
             } else {
                 end = false;
-                new := delta len;
+                new := delta.len;
                 delta push= [nil] * 5;
                 final push= false;
                 states[j] = new;
@@ -59,11 +59,11 @@ fn parse_colours(colours) colours map parse_colour collect;
 fn parse_colour(colour) ['w', 'u', 'b', 'r', 'g'] position \c (c is colour);
 
 fn solve(delta, final, design) {
-    counts := [0] * (delta len);
+    counts := [0] * delta.len;
     counts[0] = 1;
     for c in design {
         total := 0;
-        for state in 0 to (delta len) rev {
+        for state in 0 to delta.len rev {
             if counts[state] == 0 {
                 continue;
             }

@@ -44,7 +44,7 @@ impl Computer {
     }
 
     self execute {
-        while self.ip < (self.program len) {
+        while self.ip < self.program.len {
             self execute_instruction=;
         }
         return self.output;

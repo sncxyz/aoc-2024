@@ -6,14 +6,14 @@ impl All {
     self day shared part_1 part_2 = self day shared part_1 part_2 "main";
 
     self day shared part_1 part_2 input {
-        println("Input:  " + input);
+        println("Input:  ${input}");
 
         self str=;
-        if self len < 2 {
+        if self.len < 2 {
             self = "0" + self;
         }
 
-        input = io.read_file("inputs/" + self + "/" + input);
+        input = io.read_file("inputs/${self}/${input}");
 
         start := io.clock();
         input = shared(input);
@@ -28,9 +28,9 @@ impl All {
         part_1_time := end - start -> show_time;
 
         part_1 str=;
-        pad := 20 - (part_1 len) max 1;
+        pad := 20 - part_1.len max 1;
 
-        println("Part 1: " + part_1 + (" " * pad) + part_1_time);
+        println("Part 1: ${part_1}${" " * pad}${part_1_time}");
 
         if part_2 {
             start = io.clock();
@@ -39,23 +39,23 @@ impl All {
             part_2_time := end - start -> show_time;
 
             part_2 str=;
-            pad = 20 - (part_2 len) max 1;
+            pad = 20 - part_2.len max 1;
 
-            println("Part 2: " + part_2 + (" " * pad) + part_2_time);
+            println("Part 2: ${part_2}${" " * pad}${part_2_time}");
         }
     }
 }
 
 fn show_time(time) {
-    if time >= 1. {
-        return dp(time, 3) str + 's';
+    if time >= 1.0 {
+        return "${dp(time, 3)}s";
     }
-    time *= 1000.;
-    if time >= 1. {
-        return dp(time, 3) str + "ms";
+    time *= 1000.0;
+    if time >= 1.0 {
+        return "${dp(time, 3)}ms";
     }
-    time *= 1000.;
-    return dp(time, 3) str + "μs";
+    time *= 1000.0;
+    return "${dp(time, 3)}μs";
 }
 
-fn dp(x, n) x * (10. ^ float(n)) round / (10. ^ float(n));
+fn dp(x, n) x * (10.0 ^ float(n)) round / (10.0 ^ float(n));

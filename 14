@@ -12,7 +12,7 @@ fn parse(input) input split '\n' map parse_robot collect;
 fn parse_robot(line) line[2 to]
     split " v="
     map \pair (pair split ',' map int.1)
-    map \ints v(ints[0], ints[1])
+    map \ints v(ints nth 0, ints nth 1)
     collect;
 
 fn part_1(robots) {
@@ -44,7 +44,7 @@ fn part_2(robots) {
         if (column_counts filter (>= 24) count >= 5) and (row_counts filter (>= 21) count >= 4) {
             return seconds;
         }
-        for i in 0 to (robots len) {
+        for i in 0 to robots.len {
             robots[i][0] = move_robot(robots[i][0], robots[i][1]);
         }
     }

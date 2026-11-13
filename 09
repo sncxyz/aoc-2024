@@ -5,7 +5,7 @@ fn main() run.day 9 parse part_1 part_2;
 fn parse(input) {
     ids := [];
     gaps := [];
-    for id in 0 to (input len // 2) {
+    for id in 0 to (input.len // 2) {
         ids push= int(input[id * 2]) - int('0');
         gaps push= int(input[id * 2 + 1]) - int('0');
     }
@@ -22,7 +22,7 @@ fn part_1(input) {
     id := 0;
     i := 0;
     
-    while id < (ids len) {
+    while id < ids.len {
         size := ids[id];
 
         total += id * f(pos, size);
@@ -30,11 +30,11 @@ fn part_1(input) {
 
         id += 1;
 
-        if i < (gaps len) {
+        if i < gaps.len {
             gap := gaps[i];
             i += 1;
-            while gap > 0 and (id < (ids len)) {
-                id := ids len - 1;
+            while gap > 0 and (id < ids.len) {
+                id := ids.len - 1;
                 size := ids[id];
 
                 total += id * f(pos, gap min size);
@@ -67,7 +67,7 @@ fn part_2(input) {
 
     total := 0;
     pos := 0;
-    used := [false] * (ids len);
+    used := [false] * ids.len;
 
     for id, size in ids {
         if ! used[id] {
@@ -75,7 +75,7 @@ fn part_2(input) {
         }
         pos += size;
 
-        if id == (gaps len) {
+        if id == gaps.len {
             break;
         }
 

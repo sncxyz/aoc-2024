@@ -13,6 +13,7 @@ fn parse(input) input
     map \line (line
         split ','
         map int.1
+        collect
     )
     map \parts v(parts[0], parts[1])
     collect;
@@ -85,7 +86,7 @@ fn part_2(bytes) {
         parent[start] = parent[parent[start]];
         parent[exit] = parent[parent[exit]];
         if parent[start] == parent[exit] {
-            return str(byte.x) + ',' + str(byte.y);
+            return "${byte.x},${byte.y}";
         }
     }
 }

@@ -6,7 +6,7 @@ fn main() run.day 12 shared part_1 part_2;
 
 fn shared(input) {
     garden := Matrix.new(input split '\n');
-    visited := Matrix.init(garden dim, false);
+    visited := Matrix.init(garden.dim, false);
     regions := [];
     for pos in garden positions {
         if not visited[pos] {

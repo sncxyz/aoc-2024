@@ -37,7 +37,7 @@ fn part_2(wires) {
         }
     }
 
-    last_output := wires keys filter_map \k (k[0] == 'z' then (k[1 to] int?)) seq_max;
+    last_output := wires keys filter_map \k (k[0] == 'z' then (k[1 to] int?)) max;
     mistakes := [];
     for gate in wires pairs {
         wire := gate[0];
@@ -79,7 +79,7 @@ fn part_2(wires) {
         }
     }
 
-    if mistakes len != 8 {
+    if mistakes.len != 8 {
         return "?";
     }
 

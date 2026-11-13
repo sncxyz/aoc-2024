@@ -14,8 +14,8 @@ fn part_2(eqs) part_*(eqs, true);
 fn part_*(eqs, concat?) eqs filter_map \eq (solve?(eq[0], eq[1], concat?) then eq[0]) sum;
 
 fn solve?(answer, args, concat?) {
-    len := args len;
-    x := args last;
+    len := args.len;
+    x := args.last;
     if len == 1 {
         return x == answer;
     }

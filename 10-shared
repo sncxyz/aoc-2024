@@ -12,7 +12,7 @@ fn shared(input) {
         positions[pair[1]] push= pair[0];
     }
 
-    info := Matrix.init(grid dim, nil);
+    info := Matrix.init(grid.dim, nil);
 
     for id, pos in positions[9] {
         info[pos] = Info(reachable = set([id]), paths = 1);

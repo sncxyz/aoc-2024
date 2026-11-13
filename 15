@@ -92,7 +92,7 @@ fn part_2(input) {
 
 fn push_boxes(warehouse, move, to_push) {
     pushed := [];
-    while to_push len > 0 {
+    while to_push.len > 0 {
         boxes := [];
         for box in to_push {
             for pos in box pushes move {

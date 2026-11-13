@@ -26,16 +26,16 @@ fn shared(input) {
     return [map, visited remove start];
 }
 
-fn part_1(input) input[1] len + 1;
+fn part_1(input) input[1].len + 1;
 
 fn part_2(input) {
     map := input[0];
     candidates := input[1];
 
-    width := map width;
-    height := map height;
+    width := map.width;
+    height := map.height;
 
-    up := Matrix.init(map dim, nil);
+    up := Matrix.init(map.dim, nil);
     for x in 0 to width {
         dest := nil;
         for y in 0 to height {
@@ -47,7 +47,7 @@ fn part_2(input) {
         }
     }
 
-    right := Matrix.init(map dim, nil);
+    right := Matrix.init(map.dim, nil);
     for y in 0 to height {
         dest := nil;
         for x in 0 to width rev {
@@ -59,7 +59,7 @@ fn part_2(input) {
         }
     }
 
-    down := Matrix.init(map dim, nil);
+    down := Matrix.init(map.dim, nil);
     for x in 0 to width {
         dest := nil;
         for y in 0 to height rev {
@@ -71,7 +71,7 @@ fn part_2(input) {
         }
     }
 
-    left := Matrix.init(map dim, nil);
+    left := Matrix.init(map.dim, nil);
     for y in 0 to height {
         dest := nil;
         for x in 0 to width {
@@ -90,7 +90,7 @@ fn part_2(input) {
         obstr := candidate[0];
         dir := candidate[1];
         start := obstr - dir;
-        start_dir := [w(), n(), e(), s()] position \d (d == dir);
+        start_dir := [w(), n(), e(), s()] position (== dir);
 
         tortoise := start;
         hare := start;

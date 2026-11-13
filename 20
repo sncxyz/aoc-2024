@@ -19,7 +19,7 @@ fn parse(input) {
     while pos != end {
         for dp in orth() {
             new := pos + dp;
-            if new is (track last) not and (track_map[new] is '.') {
+            if new is track.last not and (track_map[new] is '.') {
                 track push= pos;
                 pos = new;
                 dist += 1;

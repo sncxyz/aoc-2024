@@ -28,7 +28,7 @@ fn part_2(nums) {
             }
         }
     }
-    return totals seq_max;
+    return totals max;
 }
 
 fn succ(num) num -> left 6 -> prune -> right 5 -> left 11 -> prune;

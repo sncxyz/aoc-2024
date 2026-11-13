@@ -1,6 +1,6 @@
 import run, nd;
 
-use std.collections.BinaryHeap;
+use std.(collections.BinaryHeap, comparison.cmp);
 
 use nd.(Matrix, vector.orth);
 
@@ -18,14 +18,14 @@ fn shared(input) {
         if maze[pos] is '.' {
             exits := orth() filter \dp (maze[pos + dp] is '#' not) count;
             if exits >= 3 {
-                maze[pos] = nodes len;
+                maze[pos] = nodes.len;
                 nodes push= pos;
             }
         }
     }
     
-    adj := [[nil] * 4] * (nodes len);
-    steps := [[nil] * 4] * (nodes len);
+    adj := [[nil] * 4] * nodes.len;
+    steps := [[nil] * 4] * nodes.len;
     for node, pos in nodes {
         for dir, dp in orth() {
             if adj[node][dir] or (maze[pos + dp] is '#') {
@@ -64,7 +64,7 @@ fn shared(input) {
     }
 
     adj2 := [];
-    for node in 0 to (nodes len) {
+    for node in 0 to nodes.len {
         dirs := [];
         for dir, dp in orth() {
             if node != 0 or (dir != 0) and (adj[node][dir + 2 mod 4] not) or (node == 1) {
@@ -92,8 +92,8 @@ fn shared(input) {
     }
 
     adj = adj2;
-    score := [[Int.MAX] * 4] * (nodes len);
-    pred := [[nil] * 4] * (nodes len);
+    score := [[Int.MAX] * 4] * nodes.len;
+    pred := [[nil] * 4] * nodes.len;
 
     best := Int.MAX;
     states := BinaryHeap.new();
@@ -133,7 +133,7 @@ fn part_2(output) {
     pred := output[2];
     steps := output[3];
 
-    visited := [[false] * 4] * (score len);
+    visited := [[false] * 4] * score.len;
     stack := [];
     for dir in 0 to 4 {
         if score[1][dir] == best {
@@ -141,8 +141,8 @@ fn part_2(output) {
         }
     }
     total := 1;
-    while stack len > 0 {
-        current := stack last;
+    while stack.len > 0 {
+        current := stack.last;
         stack pop=;
         node := current[0];
         dir := current[1];
